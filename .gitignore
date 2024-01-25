@@ -1,4 +1,4 @@
-*
-!*.*
+.* -x
 *.o
 .DS_Store
+tests/

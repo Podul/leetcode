@@ -2,12 +2,16 @@
 CC = gcc
 CFLAGS = -Iinclude -Wall
 
-# Source files and object files
-SRC_FILES = $(wildcard src/*.c)
+# Update the paths for source files
+# Assuming the source files are now located directly in the project root directory
+SRC_FILES = $(wildcard *.c)
+
+# Test source files remain the same
 TEST_SRC_FILES = $(wildcard tests/*.c)
 TEST_EXEC_PREFIX = tests/
 
 # Object files for source and test
+# Since the source files are now in the root, the object file paths should also be updated
 OBJ_FILES = $(SRC_FILES:.c=.o)
 TEST_OBJ_FILES = $(TEST_SRC_FILES:.c=.o)
 
@@ -15,11 +19,11 @@ TEST_OBJ_FILES = $(TEST_SRC_FILES:.c=.o)
 all: $(TEST_SRC_FILES:.c=)
 
 # Compile source files
-src: $(OBJ_FILES)
+# The 'src' target is no longer needed if source files are in the root directory
 
 # Compile and run a specific test
-$(TEST_EXEC_PREFIX)%: tests/%.o src
-	$(CC) $(CFLAGS) -o $@ $< $(OBJ_FILES)
+$(TEST_EXEC_PREFIX)%: tests/%.o $(OBJ_FILES)
+	$(CC) $(CFLAGS) -o $@ $^
 	./$@
 
 # Compile test object files
@@ -33,7 +37,8 @@ test: $(TEST_SRC_FILES:.c=)
 	done
 
 # Clean up
+# Update the clean command to remove object files from the root directory
 clean:
-	rm -f src/*.o tests/*.o $(TEST_SRC_FILES:.c=)
+	rm -f *.o tests/*.o $(TEST_SRC_FILES:.c=)
 
-.PHONY: all src clean test
+.PHONY: all clean test
