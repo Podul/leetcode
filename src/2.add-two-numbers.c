@@ -112,6 +112,16 @@ MU_TEST(test_1) {
     if (cur || i < numsSize) {
         mu_fail("output not eq result");
     }
+
+    for (;l1;l1=l1->next) {
+        free(l1);
+    }
+    for (;l2;l2=l2->next) {
+        free(l2);
+    }
+    for (;output;output=output->next) {
+        free(output);
+    }
 }
 
 MU_TEST_SUITE(test_suite) {

@@ -45,6 +45,7 @@ for filename in os.listdir(path=srcDir):
             content = f"""
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../include/minunit.h"
 
 #define bool int
