@@ -1,44 +1,34 @@
 # Compiler and compiler flags
 CC = gcc
-CFLAGS = -Iinclude -Wall
+CFLAGS = -I../include -Wall
 
-# Update the paths for source files
-# Assuming the source files are now located directly in the project root directory
-SRC_FILES = $(wildcard *.c)
+# Directory containing test source files
+TESTDIR = tests
 
-# Test source files remain the same
-TEST_SRC_FILES = $(wildcard tests/*.c)
-TEST_EXEC_PREFIX = tests/
+# Source and executable files
+SRCS = $(wildcard $(TESTDIR)/*.c)
+EXECS = $(SRCS:.c=)
 
-# Object files for source and test
-# Since the source files are now in the root, the object file paths should also be updated
-OBJ_FILES = $(SRC_FILES:.c=.o)
-TEST_OBJ_FILES = $(TEST_SRC_FILES:.c=.o)
+# Default target: just to avoid running all tests accidentally
+all:
+	@echo "Use 'make test' to run all tests or 'make test TEST=xxxtest' for a specific test."
 
-# Default target
-all: $(TEST_SRC_FILES:.c=)
-
-# Compile source files
-# The 'src' target is no longer needed if source files are in the root directory
-
-# Compile and run a specific test
-$(TEST_EXEC_PREFIX)%: tests/%.o $(OBJ_FILES)
-	$(CC) $(CFLAGS) -o $@ $^
-	./$@
-
-# Compile test object files
-tests/%.o: tests/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Run all tests
-test: $(TEST_SRC_FILES:.c=)
-	for test in $^ ; do \
-		./$$test ; \
+# Rule to run all tests
+test: $(EXECS)
+ifeq ($(TEST),)
+	@for test in $(EXECS); do \
+		echo Running $$test; \
+		./$$test; \
 	done
+else
+	@echo Running $(TESTDIR)/$(TEST)
+	@$(TESTDIR)/$(TEST)
+endif
 
-# Clean up
-# Update the clean command to remove object files from the root directory
+# Rule to compile each source file to an executable
+$(TESTDIR)/%: $(TESTDIR)/%.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+# Clean up executables
 clean:
-	rm -f *.o tests/*.o $(TEST_SRC_FILES:.c=)
-
-.PHONY: all clean test
+	rm -f $(EXECS)
